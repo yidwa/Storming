@@ -48,21 +48,21 @@ public class TrendingTopic {
 	  private final Config topologyConfig;
 	  private final int runtimeInSeconds;
 	  
-	  public TrendingTopic(String topologyname, long rateperSecond, Config conf) throws InterruptedException{
+	  public TrendingTopic(String topologyname, long rateperSecond, Config conf, Boolean remote) throws InterruptedException{
 		  	builder = new TopologyBuilder();
 		    topologyName = topologyname;
 		    topologyConfig = conf;
 		    runtimeInSeconds = DEFAULT_RUNTIME_IN_SECONDS;
 
-		    wireTopology(rateperSecond);
+		    wireTopology(rateperSecond, remote);
 	  }	  
 
-	  private void wireTopology(long rateperSecond) throws InterruptedException {
+	  private void wireTopology(long rateperSecond, Boolean remote) throws InterruptedException {
 		    String spoutId = "TrendingTopicwithFrequency";
 		    String counterId = "counter";
 		    String intermediateRankerId = "intermediateRanker";
 		    String totalRankerId = "finalRanker";
-		    builder.setSpout(spoutId, new TrendingTopicSpout(false, rateperSecond), 5);
+		    builder.setSpout(spoutId, new TrendingTopicSpout(remote, rateperSecond), 5);
 		    builder.setBolt(counterId, new RollingCountBolt(9, 3), 4).fieldsGrouping(spoutId, new Fields("word"));
 		    builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId, new Fields(
 		        "obj"));
@@ -94,8 +94,10 @@ public class TrendingTopic {
 		    }
 
 		    LOG.info("Topology name: " + topologyName);
-		    TrendingTopic tt = new TrendingTopic(topologyName, ratePerSecond, conf);
+		    TrendingTopic tt = new TrendingTopic(topologyName, ratePerSecond, conf, runLocally);
+		    
 		    if (runLocally) {
+		       
 		      LOG.info("Running in local mode");
 //		      LocalCluster cluster = new LocalCluster();
 //		      cluster.submitTopology(topologyName, conf, tt.builder.createTopology());
