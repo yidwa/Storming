@@ -71,7 +71,7 @@ public class TrendingTopic {
 		  
 	  public static void main(String[] args) throws Exception {
 		  
-		  long ratePerSecond = 500;
+		  long ratePerSecond = 250;
 		  int parallelism = 4;
 	//      String name = "TrendingTopicwithSettingTime";
 		 
