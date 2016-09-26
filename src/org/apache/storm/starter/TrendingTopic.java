@@ -105,8 +105,8 @@ public class TrendingTopic {
 		    }
 		    else {
 		      LOG.info("Running in remote (cluster) mode");
-		   //   StormRunner.runTopologyRemotely(tt.builder.createTopology(), topologyName, tt.topologyConfig);
-		      StormSubmitter.submitTopology(topologyName, conf, tt.builder.createTopology());
+		      StormRunner.runTopologyRemotely(tt.builder.createTopology(), topologyName, tt.topologyConfig);
+//		      StormSubmitter.submitTopology(topologyName, conf, tt.builder.createTopology());
 		    }
 	  }	    
 		
