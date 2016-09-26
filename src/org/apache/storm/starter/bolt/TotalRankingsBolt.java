@@ -61,7 +61,13 @@ public final class TotalRankingsBolt extends AbstractRankerBolt {
   public void writeFile(Rankings rank){
 	  try{
 //		  File file = new File("/home/ubuntu/rankingtopic.txt");
+
 		  File file = new File("/Users/yidwa/Desktop/rankingtopic.txt");
+
+		 // File file = new File("/Users/yidwa/Desktop/rankingtopic.txt");
+		
+	//	  File file = new File("//ntapprdfs01n01.rmit.internal/el3/e29143/Configuration/Desktop/rankingtopic.txt");
+
 		  if(!file.exists())
 			  file.createNewFile();
 		  FileWriter fw = new FileWriter(file);
