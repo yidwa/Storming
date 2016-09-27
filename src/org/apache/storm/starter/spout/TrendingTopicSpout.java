@@ -54,8 +54,8 @@ public class TrendingTopicSpout extends BaseRichSpout  {
         _rand = ThreadLocalRandom.current();
         _nextEmitTime = System.nanoTime();
         _emitsLeft = _emitAmount;
-//        _histo = new HistogramMetric(3600000000000L, 3);
-//        context.registerMetric("comp-lat-histo", _histo, 10); 
+        _histo = new HistogramMetric(3600000000000L, 3);
+        context.registerMetric("comp-lat-histo", _histo, 10); 
     }
   
     @Override
@@ -66,7 +66,7 @@ public class TrendingTopicSpout extends BaseRichSpout  {
       }
 
       if (_emitsLeft > 0) {
-    	  final String[] words = new String[] {"wang", "yi", "dan", "huang", "xiao"};
+    	  final String[] words = new String[] {"wangwang", "yiyi", "dandan", "huanghuang", "xiaoxiao"};
           final Random rand = new Random();
           final String word = words[rand.nextInt(words.length)];
         //  String sentence = SENTENCES[_rand.nextInt(SENTENCES.length)];
@@ -80,14 +80,14 @@ public class TrendingTopicSpout extends BaseRichSpout  {
 
     
     public void ack(Object msgId) {
-//    	 long end = System.nanoTime();
-//         SentWithTime st = (SentWithTime)msgId;
-//      //   _histo.recordValue(end-st.time);
+    	 long end = System.nanoTime();
+         SentWithTime st = (SentWithTime)msgId;
+         _histo.recordValue(end-st.time);
     }
 
     public void fail(Object msgId) {
-//    	 SentWithTime st = (SentWithTime)msgId;
-//         _collector.emit(new Values(st.sentence), msgId);
+    	 SentWithTime st = (SentWithTime)msgId;
+         _collector.emit(new Values(st.sentence), msgId);
     }
     
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
