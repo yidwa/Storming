@@ -94,8 +94,7 @@ public class TrendingTopic {
 	  public static void main(String[] args) throws InterruptedException, AlreadyAliveException, InvalidTopologyException, AuthorizationException{
 		  
 		  long ratePerSecond = 1;
-		  int parallelism = 4;
-		  int numMins = 2;
+		
 	      String name = "TrendingTopicwithSettingTime";
 		 
 	      String topologyName = "TrendingTopicwithSettingTime";
