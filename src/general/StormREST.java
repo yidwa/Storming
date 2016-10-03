@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,8 +18,8 @@ import org.json.simple.parser.ParseException;
 public class StormREST {
 	// all topologies 
 	HashMap<String, String> topologies;
-	ArrayList<Supervisor> workers;
-	
+	//ArrayList<Supervisor> workers;
+	HashMap<String, Supervisor> workers;
 	URL url;
 	String hostport;
 	HttpURLConnection conn;
@@ -63,7 +64,7 @@ public class StormREST {
 				}
 
 			}
-		//	System.out.println("values " +topologies.toString());
+			System.out.println("values " +topologies.toString());
 			conn.disconnect();
 		}
 		catch (MalformedURLException e){
@@ -78,7 +79,8 @@ public class StormREST {
 	}
 
 	public void Supervisorinfo(){
-		    workers = new ArrayList<Supervisor>();
+//		    workers = new ArrayList<Supervisor>();
+		    workers = new HashMap<String, Supervisor>();
 			try {
 				url = new URL(hostport+"/api/v1/supervisor/summary");
 				conn = (HttpURLConnection) url.openConnection();
@@ -102,14 +104,14 @@ public class StormREST {
 						Object tobj = topo.get(i);
 						JSONObject tjobj = (JSONObject) tobj;
 				//		System.out.println(tjobj.get("id"));
-						Supervisor s = new Supervisor((String)tjobj.get("id"),(String)tjobj.get("host"),(Long)tjobj.get("slotsTotal"),
+						String host = (String)tjobj.get("host");
+						Supervisor s = new Supervisor((String)tjobj.get("id"),(Long)tjobj.get("slotsTotal"),
 								(Long)tjobj.get("slotsUsed"),(Double)tjobj.get("totalMem"),(Double)tjobj.get("totalCpu"),
 								(Double)tjobj.get("usedMem"),(Double)tjobj.get("usedCpu"));
 //						workers.add(new Supervisor((String)tjobj.get("id"),(String)tjobj.get("host"),(Long)tjobj.get("slotsTotal"),
 //								(Long)tjobj.get("slotsUsed"),(Double)tjobj.get("totalMem"),(Double)tjobj.get("totalCpu"),
 //								(Double)tjobj.get("usedMem"),(Double)tjobj.get("usedCpu")));
-					
-						workers.add(s);
+						workers.put(host, s);
 					}
 					
 					//System.out.println(output+ "\n");
@@ -125,12 +127,14 @@ public class StormREST {
 				e.printStackTrace();
 			}
 			
-			for(Supervisor s : workers)
-				System.out.println(s.toString());
+////			System.out.println(System.nanoTime());
+//			for(Entry<String, Supervisor> s : workers.entrySet())
+//				System.out.println(s.getValue().toString());
 			
 			conn.disconnect();
-
 		
 	}
+	
+
 }
 

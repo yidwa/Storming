@@ -5,19 +5,19 @@ import java.util.Queue;
 
 public class Supervisor {
 	String id;
-	String ip;
+//	String ip;
 	long totalslot;
 	long usedslot;
 	double totalMem;
 	double totalCPU;
 	double usedMem;
 	double usedCPU;
-	static Queue memhis;
-	static Queue cpuhis;
+	Queue memhis;
+    Queue cpuhis;
 	
-	public Supervisor(String id, String ip, long totalslot, long usedslot, double totalMem, double totalCPU, double usedMem, double usedCPU){
+	public Supervisor(String id, long totalslot, long usedslot, double totalMem, double totalCPU, double usedMem, double usedCPU){
 		this.id = id;
-		this.ip = ip;
+	//	this.ip = ip;
 		this.totalslot = totalslot;
 		this.usedslot = usedslot;
 		this.totalCPU = totalCPU;
@@ -31,21 +31,22 @@ public class Supervisor {
 	
 	@Override
 	public String toString() {
-		return "Supervisor [id=" + id + ", ip=" + ip + ", totalslot=" + totalslot + ", usedslot=" + usedslot
+		return "Supervisor [id=" + id + ", totalslot=" + totalslot + ", usedslot=" + usedslot
 				+ ", totalMem=" + totalMem + ", totalCPU=" + totalCPU + ", usedMem=" + usedMem + ", usedCPU=" + usedCPU
 				+ "]";
 	}
 
 
-	public static void updatecpu(int value){
+	public void updatecpu(double value){
 		getCpuhis().add(value);
 	}
 	
-	public static void updatemem(int value){
+	public void updatemem(double value){
 		getMemhis().add(value);
 	}
 	
-	public static Queue<Integer> getMemhis() {
+	
+	public Queue<Double> getMemhis() {
 		return memhis;
 	}
 
@@ -53,7 +54,7 @@ public class Supervisor {
 		this.memhis = memhis;
 	}
 
-	public static Queue<Integer> getCpuhis() {
+	public Queue<Double> getCpuhis() {
 		return cpuhis;
 	}
 
@@ -69,13 +70,13 @@ public class Supervisor {
 		this.id = id;
 	}
 
-	public String getIp() {
-		return ip;
-	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
+//	public String getIp() {
+//		return ip;
+//	}
+//
+//	public void setIp(String ip) {
+//		this.ip = ip;
+//	}
 
 	public long getTotalslot() {
 		return totalslot;
@@ -89,7 +90,7 @@ public class Supervisor {
 		return usedslot;
 	}
 
-	public void setUsedslot(int usedslot) {
+	public void setUsedslot(long usedslot) {
 		this.usedslot = usedslot;
 	}
 
@@ -97,7 +98,7 @@ public class Supervisor {
 		return totalMem;
 	}
 
-	public void setTotalMem(int totalMem) {
+	public void setTotalMem(double totalMem) {
 		this.totalMem = totalMem;
 	}
 
@@ -105,7 +106,7 @@ public class Supervisor {
 		return totalCPU;
 	}
 
-	public void setTotalCPU(int totalCPU) {
+	public void setTotalCPU(double totalCPU) {
 		this.totalCPU = totalCPU;
 	}
 
@@ -113,7 +114,7 @@ public class Supervisor {
 		return usedMem;
 	}
 
-	public void setUsedMem(int usedMem) {
+	public void setUsedMem(double usedMem) {
 		this.usedMem = usedMem;
 	}
 
@@ -121,7 +122,7 @@ public class Supervisor {
 		return usedCPU;
 	}
 
-	public void setUsedCPU(int usedCPU) {
+	public void setUsedCPU(double usedCPU) {
 		this.usedCPU = usedCPU;
 	}
 	

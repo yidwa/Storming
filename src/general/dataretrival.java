@@ -10,9 +10,16 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.hadoop.hbase.util.Threads;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -84,15 +91,59 @@ public class dataretrival {
 //			e.printStackTrace();
 //		}
 //	}
-
 	
-	public static void main(String[] args) {
-	StormREST sr = new StormREST("http://115.146.85.187:8080");
-	//sr.Topologyget();
-	sr.Supervisorinfo();
+	public static ArrayList<Supervisor> getworkers(HashMap<String, Supervisor> workers){
+		ArrayList<Supervisor> w = new ArrayList<Supervisor>();
+		for (Map.Entry<String, Supervisor> entry : workers.entrySet()){
+			w.add(entry.getValue());
+		}
+		return w;
 	}
 	
+	public static void main(String[] args) throws InterruptedException, IOException {
+	StormREST sr = new StormREST("http://115.146.85.187:8080");
+//    int runcount = 0;
+//	int maxrun = 5;
+	//sr.Topologyget();
+	sr.Supervisorinfo();
+
+//	ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+//	exec.scheduleAtFixedRate(new Runnable() {
+//		public void run(){
+//			while (runcount <= maxrun){
+//				sr.Supervisorinfo();
+//				
+//			}
+//			
+//		}
+//		}, 0, 1, TimeUnit.MINUTES);
+	ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
+//
+	for (int i = 0; i< 5; i++){
+		
+		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
+		scheduledPool.schedule(update, 0, TimeUnit.SECONDS);
+		System.out.println("new thread start");
+		Thread.sleep(10000);
+	}
+		
+	Threads.sleep(3000);
 	
+	scheduledPool.shutdown();
+	
+	while(!scheduledPool.isTerminated()){
+		}
+	System.out.println("all finished");
+//	}
+	
+	
+	for (Entry<String, Supervisor> s : sr.workers.entrySet()){
+			Supervisor ss = s.getValue();
+			System.out.println("supervisor "+ ss.id+ " cpu his " + ss.cpuhis.toString()+ " mem hist "+ ss.memhis);
+		}
+	
+	}
+
 }
 
 
