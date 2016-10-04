@@ -128,6 +128,7 @@ public class StormREST {
 			}
 			
 ////			System.out.println(System.nanoTime());
+//			System.out.println("workers status now");
 //			for(Entry<String, Supervisor> s : workers.entrySet())
 //				System.out.println(s.getValue().toString());
 			

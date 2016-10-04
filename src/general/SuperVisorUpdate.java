@@ -1,6 +1,8 @@
 package general;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -25,6 +27,8 @@ public class SuperVisorUpdate implements Runnable{
 	HttpURLConnection conn;
 	Object obj;
 	JSONObject jobj;
+	File sysinfo;
+	FileWriter fw;
 	
 	
 	public SuperVisorUpdate(HashMap<String, Supervisor> workers, String hostport) throws IOException {
@@ -37,17 +41,19 @@ public class SuperVisorUpdate implements Runnable{
 		if (conn.getResponseCode() != 200){
 			throw new RuntimeException("Failed : http error code"+ conn.getResponseCode());
 			}
-
+		
+		
 	}
 	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-			
+
 			try {
-			
+				
 				BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String output;
+		
 				
 				while((output = br.readLine()) != null){
 					JSONParser parser = new JSONParser();
@@ -70,6 +76,7 @@ public class SuperVisorUpdate implements Runnable{
 						t.setUsedCPU(uptCpu);
 						t.setUsedMem(uptMem);
 						t.setUsedslot(uptSlot);
+					
 //						Supervisor s = new Supervisor((String)tjobj.get("id"),(Long)tjobj.get("slotsTotal"),
 //								(Long)tjobj.get("slotsUsed"),(Double)tjobj.get("totalMem"),(Double)tjobj.get("totalCpu"),
 //								(Double)tjobj.get("usedMem"),(Double)tjobj.get("usedCpu"));
@@ -78,7 +85,10 @@ public class SuperVisorUpdate implements Runnable{
 ////								(Double)tjobj.get("usedMem"),(Double)tjobj.get("usedCpu")));
 //						workers.put(host, s);
 					}
-					
+				//	System.out.println("worker size "+ workers.size());
+					Thread t = new Thread(new SVfileupdate(workers));
+					t.start();
+			
 					//System.out.println(output+ "\n");
 					}
 			} catch (MalformedURLException e) {

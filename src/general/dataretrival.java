@@ -102,28 +102,30 @@ public class dataretrival {
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
 	StormREST sr = new StormREST("http://115.146.85.187:8080");
-//    int runcount = 0;
-//	int maxrun = 5;
+
 	//sr.Topologyget();
 	sr.Supervisorinfo();
 
 //	ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
 //	exec.scheduleAtFixedRate(new Runnable() {
 //		public void run(){
-//			while (runcount <= maxrun){
 //				sr.Supervisorinfo();
-//				
 //			}
 //			
 //		}
 //		}, 0, 1, TimeUnit.MINUTES);
+	
+	
+	
+	//for testing purpose, run 5 times with delay of 10 seconds
 	ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
-//
+
+	
 	for (int i = 0; i< 5; i++){
 		
 		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
 		scheduledPool.schedule(update, 0, TimeUnit.SECONDS);
-		System.out.println("new thread start");
+	//	System.out.println("new thread start");
 		Thread.sleep(10000);
 	}
 		
@@ -133,15 +135,9 @@ public class dataretrival {
 	
 	while(!scheduledPool.isTerminated()){
 		}
+	
 	System.out.println("all finished");
-//	}
-	
-	
-	for (Entry<String, Supervisor> s : sr.workers.entrySet()){
-			Supervisor ss = s.getValue();
-			System.out.println("supervisor "+ ss.id+ " cpu his " + ss.cpuhis.toString()+ " mem hist "+ ss.memhis);
-		}
-	
+
 	}
 
 }
