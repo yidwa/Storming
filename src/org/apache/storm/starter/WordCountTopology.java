@@ -30,6 +30,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.apache.storm.starter.spout.RandomSentenceSpout;
+import org.apache.storm.starter.spout.testWord;
 
 import java.net.InetAddress;
 import java.util.HashMap;
@@ -80,8 +81,8 @@ public class WordCountTopology {
 //	  System.out.println( "host name" +InetAddress.getLocalHost().getHostAddress());
     TopologyBuilder builder = new TopologyBuilder();
 
-    builder.setSpout("spout", new RandomSentenceSpout(), 5);
-
+  // builder.setSpout("spout", new RandomSentenceSpout(), 5);
+    builder.setSpout("spout", new testWord(),4);
     builder.setBolt("split", new SplitSentence(), 8).shuffleGrouping("spout");
     builder.setBolt("count", new WordCount(), 12).fieldsGrouping("split", new Fields("word"));
 

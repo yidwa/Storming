@@ -92,20 +92,29 @@ public class dataretrival {
 //		}
 //	}
 	
-	public static ArrayList<Supervisor> getworkers(HashMap<String, Supervisor> workers){
-		ArrayList<Supervisor> w = new ArrayList<Supervisor>();
-		for (Map.Entry<String, Supervisor> entry : workers.entrySet()){
-			w.add(entry.getValue());
-		}
-		return w;
-	}
+//	public static ArrayList<Supervisor> getworkers(HashMap<String, Supervisor> workers){
+//		ArrayList<Supervisor> w = new ArrayList<Supervisor>();
+//		for (Map.Entry<String, Supervisor> entry : workers.entrySet()){
+//			w.add(entry.getValue());
+//		}
+//		return w;
+//	}
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
-	StormREST sr = new StormREST("http://115.146.85.187:8080");
+	
+		StormREST sr = new StormREST("http://115.146.85.187:8080");
 
-	//sr.Topologyget();
-	sr.Supervisorinfo();
-
+		sr.Topologyget();
+//	
+	
+//	sr.Supervisorinfo();
+		sr.Topologyinfo();
+//	
+//	for(Entry<String, Topology> e : sr.topologies.entrySet()){
+//		System.out.println(e.getKey()+ " , "+ sr.topologies.get(e.getKey()).tworker.toString());
+//	}
+	//sr.Supervisorinfo();
+//	System.out.println(sr.topologies.toString());
 //	ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
 //	exec.scheduleAtFixedRate(new Runnable() {
 //		public void run(){
@@ -118,28 +127,28 @@ public class dataretrival {
 	
 	
 	//for testing purpose, run 5 times with delay of 10 seconds
-	ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
-
-	
-	for (int i = 0; i< 5; i++){
-		
-		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
-		scheduledPool.schedule(update, 0, TimeUnit.SECONDS);
-	//	System.out.println("new thread start");
-		Thread.sleep(10000);
+//	ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
+//
+//	
+//	for (int i = 0; i< 5; i++){
+//		
+//		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
+//		scheduledPool.schedule(update, 0, TimeUnit.SECONDS);
+//	//	System.out.println("new thread start");
+//		Thread.sleep(10000);
+//	}
+//		
+//	Threads.sleep(3000);
+//	
+//	scheduledPool.shutdown();
+//	
+//	while(!scheduledPool.isTerminated()){
+//		}
+//	
+//	System.out.println("all finished");
+//
 	}
-		
-	Threads.sleep(3000);
 	
-	scheduledPool.shutdown();
-	
-	while(!scheduledPool.isTerminated()){
-		}
-	
-	System.out.println("all finished");
-
-	}
-
 }
 
 

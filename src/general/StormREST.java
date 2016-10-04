@@ -1,6 +1,8 @@
 package general;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -17,108 +19,50 @@ import org.json.simple.parser.ParseException;
 
 public class StormREST {
 	// all topologies 
-	HashMap<String, String> topologies;
-	//ArrayList<Supervisor> workers;
+	HashMap<String, Topology> topologies;
+//	ArrayList<Topology> topologies;
+	// all supervisors
 	HashMap<String, Supervisor> workers;
 	URL url;
 	String hostport;
 	HttpURLConnection conn;
 	Object obj;
 	JSONObject jobj;
+	String output;
+	BufferedReader br;
 	
 	public StormREST(String hostport){
 		this.hostport = hostport;
-		topologies  = new HashMap<String, String>();
+		topologies  = new HashMap<String, Topology>();
 		this.obj = null;
 		this.jobj = null;
-		
+		this.output = "";
 	}
 	
 	public void Topologyget(){
-		try{
-			url = new URL(hostport+"/api/v1/topology/summary");
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
-		
-			if (conn.getResponseCode() != 200){
-				throw new RuntimeException("Failed : http error code"+ conn.getResponseCode());
-			}
-				
-			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String output;
-		//	System.out.println("output from server \n");
-			while((output = br.readLine()) != null){
-		//		System.out.println(output+ "\n");
-				JSONParser parser = new JSONParser();
-				obj = parser.parse(output);
-				jobj = (JSONObject)obj;
-				JSONArray topo = (JSONArray) jobj.get("topologies");
-				for (int i = 0 ; i< topo.size(); i++){
-					obj = topo.get(i);
-					jobj = (JSONObject) obj;
-//					System.out.println(temp.get("name")+ ", "+temp.get("id"));
-					//System.out.println(topo.get(i).getClass().getName());
-					
-					topologies.put((String)jobj.get("name"), (String)jobj.get("id"));
-				}
-
-			}
-			System.out.println("values " +topologies.toString());
-			conn.disconnect();
-		}
-		catch (MalformedURLException e){
-			e.printStackTrace();
-		}
-		catch (IOException e){
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void Supervisorinfo(){
-//		    workers = new ArrayList<Supervisor>();
-		    workers = new HashMap<String, Supervisor>();
+			Connect("/api/v1/topology/summary");
+			//System.out.println("output from server \n");
 			try {
-				url = new URL(hostport+"/api/v1/supervisor/summary");
-				conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("GET");
-				conn.setRequestProperty("Accept", "application/json");
-				if (conn.getResponseCode() != 200){
-					throw new RuntimeException("Failed : http error code"+ conn.getResponseCode());
-					}
-
-				BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				String output;
-				
 				while((output = br.readLine()) != null){
+//		System.out.println(output+ "\n");
 					JSONParser parser = new JSONParser();
-				//	System.out.println(output);
+					
 					obj = parser.parse(output);
 					jobj = (JSONObject)obj;
-					JSONArray topo = (JSONArray) jobj.get("supervisors");
-//					System.out.println("size is "+topo.size());
+					JSONArray topo = (JSONArray) jobj.get("topologies");
 					for (int i = 0 ; i< topo.size(); i++){
-						Object tobj = topo.get(i);
-						JSONObject tjobj = (JSONObject) tobj;
-				//		System.out.println(tjobj.get("id"));
-						String host = (String)tjobj.get("host");
-						Supervisor s = new Supervisor((String)tjobj.get("id"),(Long)tjobj.get("slotsTotal"),
-								(Long)tjobj.get("slotsUsed"),(Double)tjobj.get("totalMem"),(Double)tjobj.get("totalCpu"),
-								(Double)tjobj.get("usedMem"),(Double)tjobj.get("usedCpu"));
-//						workers.add(new Supervisor((String)tjobj.get("id"),(String)tjobj.get("host"),(Long)tjobj.get("slotsTotal"),
-//								(Long)tjobj.get("slotsUsed"),(Double)tjobj.get("totalMem"),(Double)tjobj.get("totalCpu"),
-//								(Double)tjobj.get("usedMem"),(Double)tjobj.get("usedCpu")));
-						workers.put(host, s);
+						obj = topo.get(i);
+						jobj = (JSONObject) obj;
+					//	String name = (String)jobj.get("name");
+						String id = (String)jobj.get("id");
+				//		System.out.println("id is  "+ id);
+//					System.out.println(temp.get("name")+ ", "+temp.get("id"));
+//						System.out.println(topo.get(i).getClass().getName());
+				//		topologies.add(new Topology((String)jobj.get("id")));
+						topologies.put(id, new Topology(id));
 					}
-					
-					//System.out.println(output+ "\n");
-					}
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -126,6 +70,117 @@ public class StormREST {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+	//		System.out.println("values " +topologies.toString());
+			conn.disconnect();
+		}
+
+
+	public void Topologyinfo(){
+		for(Entry<String, Topology> e : topologies.entrySet()){
+			//	System.out.println("key is "+e.getKey());
+				topologyworker(e.getKey());
+			}
+		
+		try {
+			File f = new File(Constants.topologyworker);
+			FileWriter fw = new FileWriter(f);
+			for(Entry<String, Topology> e : topologies.entrySet()){
+				String time = Methods.formattime();
+				fw.write(time +" , "+ e.getKey() + " , "+ e.getValue().tworker.toString()+"\n");
+				fw.flush();
+			}
+			fw.close();
+		}catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	
+	
+	public void topologyworker(String id){
+		Connect("/api/v1/topology-workers/"+id);
+		try{
+			while((output = br.readLine()) != null){
+				JSONParser parser = new JSONParser();
+				obj = parser.parse(output);
+				jobj = (JSONObject)obj;
+				
+				// check the type of return value
+			//	System.out.println(jobj.get("hostPortList").getClass().getName());
+			    JSONArray topo = (JSONArray) jobj.get("hostPortList");
+				for (int i = 0 ; i< topo.size(); i++){
+					obj = topo.get(i);
+					jobj = (JSONObject) obj;
+					topologies.get(id).getTworker().put((String)jobj.get("host"), (Long)jobj.get("port"));
+//							topologies.put((String)jobj.get("name"), (String)jobj.get("id"));
+					
+					}
+			}
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		conn.disconnect();
+	}
+
+	public void Connect(String q){
+		try {
+			url = new URL(hostport+q);
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+			if (conn.getResponseCode() != 200){
+				throw new RuntimeException("Failed : http error code"+ conn.getResponseCode());
+				}
+
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		}
+			catch (MalformedURLException e){
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
+	public void Supervisorinfo(){
+		    workers = new HashMap<String, Supervisor>();
+				Connect("/api/v1/supervisor/summary");
+				try {
+					while((output = br.readLine()) != null){
+						JSONParser parser = new JSONParser();
+					//	System.out.println(output);
+						obj = parser.parse(output);
+						jobj = (JSONObject)obj;
+						JSONArray topo = (JSONArray) jobj.get("supervisors");
+//						System.out.println("size is "+topo.size());
+						for (int i = 0 ; i< topo.size(); i++){
+							Object tobj = topo.get(i);
+							JSONObject tjobj = (JSONObject) tobj;
+					//		System.out.println(tjobj.get("id"));
+							String host = (String)tjobj.get("host");
+							Supervisor s = new Supervisor((String)tjobj.get("id"),(Long)tjobj.get("slotsTotal"),
+							(Long)tjobj.get("slotsUsed"),(Double)tjobj.get("totalMem"),(Double)tjobj.get("totalCpu"),
+							(Double)tjobj.get("usedMem"),(Double)tjobj.get("usedCpu"));
+//						workers.add(new Supervisor((String)tjobj.get("id"),(String)tjobj.get("host"),(Long)tjobj.get("slotsTotal"),
+//								(Long)tjobj.get("slotsUsed"),(Double)tjobj.get("totalMem"),(Double)tjobj.get("totalCpu"),
+//								(Double)tjobj.get("usedMem"),(Double)tjobj.get("usedCpu")));
+							workers.put(host, s);
+						}
+						
+						//System.out.println(output+ "\n");
+						}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			
 ////			System.out.println(System.nanoTime());
 //			System.out.println("workers status now");

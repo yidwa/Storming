@@ -3,6 +3,7 @@ package general;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -35,7 +36,7 @@ public class SVfileupdate implements Runnable {
 				for(Entry<String,Supervisor> e : workers.entrySet()){
 					Supervisor s = e.getValue();
 			//		System.out.println("host is "+ e.getKey());
-					fw.write(e.getKey() + " ,  "+ System.currentTimeMillis() + " , "+ s.cpuhis.toString() + " , "+ s.memhis.toString() + " , "+ s.usedslot+ "\n");
+					fw.write(e.getKey() + " ,  "+ Methods.formattime() + " , "+ s.cpuhis.toString() + " , "+ s.memhis.toString() + " , "+ s.usedslot+ "\n");
 		//			System.out.println(" write "+ "CPU used list " + s.cpuhis.toString() + " , Memory used list "+ s.memhis.toString() + " slot used now "+ s.usedslot);
 					fw.flush();
 				}
@@ -47,4 +48,6 @@ public class SVfileupdate implements Runnable {
 				e1.printStackTrace();
 			}
 		}
+	
+
 }
