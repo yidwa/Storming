@@ -75,6 +75,7 @@ public class StormREST {
 		}
 
 
+	// get the active topology info
 	public void Topologyinfo(){
 		for(Entry<String, Topology> e : topologies.entrySet()){
 			//	System.out.println("key is "+e.getKey());
@@ -97,6 +98,7 @@ public class StormREST {
 		}
 	
 	
+	// get the worker information of each topology
 	public void topologyworker(String id){
 		Connect("/api/v1/topology-workers/"+id);
 		try{
@@ -146,6 +148,7 @@ public class StormREST {
 			}
 	}
 	
+	// get the active supervisor information 
 	public void Supervisorinfo(){
 		    workers = new HashMap<String, Supervisor>();
 				Connect("/api/v1/supervisor/summary");

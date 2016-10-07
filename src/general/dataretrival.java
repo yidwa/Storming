@@ -105,9 +105,7 @@ public class dataretrival {
 		StormREST sr = new StormREST("http://115.146.85.187:8080");
 
 		sr.Topologyget();
-//	
-	
-//	sr.Supervisorinfo();
+		sr.Supervisorinfo();
 		sr.Topologyinfo();
 //	
 //	for(Entry<String, Topology> e : sr.topologies.entrySet()){
@@ -146,7 +144,7 @@ public class dataretrival {
 //		}
 //	
 //	System.out.println("all finished");
-//
+
 	}
 	
 }
