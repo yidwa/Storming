@@ -72,7 +72,7 @@ public class TrendingTopic {
 		    String counterId = "counter";
 		    String intermediateRankerId = "intermediateRanker";
 		    String totalRankerId = "finalRanker";
-		    builder.setSpout(spoutId, new TrendingTopicSpout(false, rateperSecond), 5);
+		    builder.setSpout(spoutId, new TrendingTopicSpout(false, rateperSecond), 4);
 		    builder.setBolt(counterId, new RollingCountBolt(9, 3), 4).fieldsGrouping(spoutId, new Fields("word"));
 		    builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId, new Fields(
 		        "obj"));

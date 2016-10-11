@@ -55,6 +55,7 @@ public class RollingTopWords {
 
   private static Config createTopologyConfiguration() {
     Config conf = new Config();
+    conf.setNumWorkers(4);
     conf.setDebug(true);
     return conf;
   }
@@ -64,7 +65,7 @@ public class RollingTopWords {
     String counterId = "counter";
     String intermediateRankerId = "intermediateRanker";
     String totalRankerId = "finalRanker";
-    builder.setSpout(spoutId, new testWord(), 5);
+    builder.setSpout(spoutId, new testWord(), 4);
     builder.setBolt(counterId, new RollingCountBolt(9, 3), 4).fieldsGrouping(spoutId, new Fields("word"));
     builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId, new Fields(
         "obj"));

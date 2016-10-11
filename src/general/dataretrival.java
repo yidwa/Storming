@@ -104,10 +104,16 @@ public class dataretrival {
 	
 		StormREST sr = new StormREST("http://115.146.85.187:8080");
 
+	
 		sr.Topologyget();
+//		sr.topologySum();
+
 		sr.Supervisorinfo();
 		sr.Topologyinfo();
 //	
+		
+		
+		
 //	for(Entry<String, Topology> e : sr.topologies.entrySet()){
 //		System.out.println(e.getKey()+ " , "+ sr.topologies.get(e.getKey()).tworker.toString());
 //	}
@@ -125,25 +131,27 @@ public class dataretrival {
 	
 	
 	//for testing purpose, run 5 times with delay of 10 seconds
-//	ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
+	ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
 //
 //	
-//	for (int i = 0; i< 5; i++){
-//		
+	for (int i = 0; i< 5; i++){
+		
+		PerformanceUpdate pu = new PerformanceUpdate(sr.topologies, sr.hostport);
 //		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
-//		scheduledPool.schedule(update, 0, TimeUnit.SECONDS);
-//	//	System.out.println("new thread start");
-//		Thread.sleep(10000);
-//	}
+		scheduledPool.schedule(pu, 0, TimeUnit.SECONDS);
+//		scheduledPool.scheduleAtFixedRate(pu, 0, 20, TimeUnit.SECONDS);
+		System.out.println("new thread start");
+		Thread.sleep(10000);
+	}
 //		
-//	Threads.sleep(3000);
-//	
-//	scheduledPool.shutdown();
-//	
-//	while(!scheduledPool.isTerminated()){
-//		}
-//	
-//	System.out.println("all finished");
+	Threads.sleep(3000);
+	
+	scheduledPool.shutdown();
+	
+	while(!scheduledPool.isTerminated()){
+		}
+	
+	System.out.println("all finished");
 
 	}
 	

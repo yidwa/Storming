@@ -17,6 +17,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import clojure.main;
+
 public class StormREST {
 	// all topologies 
 	HashMap<String, Topology> topologies;
@@ -193,6 +195,82 @@ public class StormREST {
 			conn.disconnect();
 		
 	}
+	
+	public void topologySum(){
+		for(Entry<String, Topology> e : topologies.entrySet()){
+				topologySpoutInitial(e.getKey());
+				topologyBoltInitial(e.getKey());
+			}
+		
+	}
+	
+	//get the spout and bolt of each topology
+	public void topologySpoutInitial(String id){
+		Connect("/api/v1/topology/"+id);
+		try{
+			while((output = br.readLine()) != null){
+				JSONParser parser = new JSONParser();
+				obj = parser.parse(output);
+				jobj = (JSONObject)obj;	
+		
+				// check the type of return value
+//				System.out.println(jobj.getClass().getName());
+			    JSONArray topo = (JSONArray)jobj.get("spouts");
+			  
+			    // only allow one spout for each topology
+			    for (int i = 0; i<topo.size() ; i++){
+//			    System.out.println("get output "+topo);
+			   
+			    	obj = topo.get(0);
+			    	jobj = (JSONObject) obj;
+//					topologies.get(id).getTworker().put((String)jobj.get("host"), (Long)jobj.get("port"));
+			//		System.out.println("latency is "+(String)jobj.get("completeLatency"));
+//							topologies.put((String)jobj.get("name"), (String)jobj.get("id"));
+			    	String spoutid = (String)jobj.get("spoutId");
+			    	topologies.get(id).setSpout(new Spout(spoutid));
+			    }
+			}
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		conn.disconnect();
+	}
+	
+	public void topologyBoltInitial(String id){
+		Connect("/api/v1/topology/"+id);
+		try{
+			while((output = br.readLine()) != null){
+				JSONParser parser = new JSONParser();
+				obj = parser.parse(output);
+				jobj = (JSONObject)obj;	
+		
+				// check the type of return value
+//				System.out.println(jobj.getClass().getName());
+				JSONArray temp = (JSONArray)jobj.get("bolts");
+				ArrayList<Bolt> b = new ArrayList<Bolt>();
+				for (int i = 0 ; i< temp.size(); i++){
+					obj = temp.get(i);
+					jobj = (JSONObject) obj;
+					String boltid = (String)jobj.get("boltId");
+					b.add(new Bolt(boltid));
+			   }
+				topologies.get(id).setBolts(b);			
+			}
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		conn.disconnect();
+	}
+	
+	
 	
 
 }
