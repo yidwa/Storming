@@ -10,12 +10,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.apache.storm.starter.TrendingTopic;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class PerformanceUpdate implements Runnable{
+//public class PerformanceUpdate {
 	HashMap<String, Topology> topologies;
 	String hostport;
 	URL url;
@@ -29,20 +31,22 @@ public class PerformanceUpdate implements Runnable{
 		this.hostport =hostport;
 		
 	}
-	
-	@Override
+//	public void updating(){
+//	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		for(Entry<String, Topology> e : topologies.entrySet()){
 			System.out.println("start now ");
 			ComponenetsPerf(e.getKey());
-			writeFile(e.getKey());
+			String f = TrendingTopic.freq;
+			String p = TrendingTopic.parallel;
+			writeFile(e.getKey(), f, p);
 		}
 	}
 	
-	public void writeFile(String id){
+	public void writeFile(String id, String freq, String parallel){
 		try {
-			String path = Constants.topologysum+"_"+id+".txt";
+			String path = Constants.topologysum+freq+"_p"+parallel+".txt";
 			File f = new File(path);
 			FileWriter fw = new FileWriter(f,true);
 			String time = Methods.formattime();

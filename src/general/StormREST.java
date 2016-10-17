@@ -79,25 +79,29 @@ public class StormREST {
 
 	// get the active topology info
 	public void Topologyinfo(){
-		for(Entry<String, Topology> e : topologies.entrySet()){
+		if (topologies.size() == 0)
+			System.out.println("no topology is working at the moment");
+		else{
+			for(Entry<String, Topology> e : topologies.entrySet()){
 			//	System.out.println("key is "+e.getKey());
 				topologyworker(e.getKey());
 			}
 		
-		try {
-			File f = new File(Constants.topologyworker);
-			FileWriter fw = new FileWriter(f);
-			for(Entry<String, Topology> e : topologies.entrySet()){
-				String time = Methods.formattime();
-				fw.write(time +" , "+ e.getKey() + " , "+ e.getValue().tworker.toString()+"\n");
-				fw.flush();
-			}
-			fw.close();
-		}catch (IOException e1) {
+			try {
+				File f = new File(Constants.topologyworker);
+				FileWriter fw = new FileWriter(f);
+				for(Entry<String, Topology> e : topologies.entrySet()){
+					String time = Methods.formattime();
+					fw.write(time +" , "+ e.getKey() + " , "+ e.getValue().tworker.toString()+"\n");
+					fw.flush();
+				}
+				fw.close();
+			}catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
+				}
 		}
+	}
 	
 	
 	// get the worker information of each topology

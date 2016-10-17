@@ -106,12 +106,12 @@ public class dataretrival {
 
 	
 		sr.Topologyget();
-//		sr.topologySum();
+		
 
 		sr.Supervisorinfo();
 		sr.Topologyinfo();
 //	
-		
+		sr.topologySum();
 		
 		
 //	for(Entry<String, Topology> e : sr.topologies.entrySet()){
@@ -119,31 +119,35 @@ public class dataretrival {
 //	}
 	//sr.Supervisorinfo();
 //	System.out.println(sr.topologies.toString());
+		
 //	ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
 //	exec.scheduleAtFixedRate(new Runnable() {
 //		public void run(){
-//				sr.Supervisorinfo();
+////				sr.Supervisorinfo();
+//			PerformanceUpdate pu = new PerformanceUpdate(sr.topologies, sr.hostport);
+//			pu.updating();
 //			}
 //			
-//		}
-//		}, 0, 1, TimeUnit.MINUTES);
-	
-	
+//		}, 0, 5, TimeUnit.MINUTES);
+//	}
+
 	
 	//for testing purpose, run 5 times with delay of 10 seconds
 	ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
-//
-//	
-	for (int i = 0; i< 5; i++){
-		
-		PerformanceUpdate pu = new PerformanceUpdate(sr.topologies, sr.hostport);
-//		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
-		scheduledPool.schedule(pu, 0, TimeUnit.SECONDS);
-//		scheduledPool.scheduleAtFixedRate(pu, 0, 20, TimeUnit.SECONDS);
-		System.out.println("new thread start");
-		Thread.sleep(10000);
-	}
+////
+////	
+	for (int i = 0; i< 14; i++){
 //		
+		PerformanceUpdate pu = new PerformanceUpdate(sr.topologies, sr.hostport);
+////		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
+		scheduledPool.schedule(pu, 0, TimeUnit.SECONDS);
+////		scheduledPool.scheduleAtFixedRate(pu, 0, 20, TimeUnit.SECONDS);
+		System.out.println("new thread start");
+		Thread.sleep(5*60*1000);
+	}
+
+	
+////		
 	Threads.sleep(3000);
 	
 	scheduledPool.shutdown();
@@ -154,7 +158,6 @@ public class dataretrival {
 	System.out.println("all finished");
 
 	}
-	
+//	}
 }
-
 

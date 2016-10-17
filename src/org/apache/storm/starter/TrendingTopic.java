@@ -41,6 +41,8 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.utils.NimbusClient;
 import org.apache.storm.utils.Utils;
 
+import general.Constants;
+
 public class TrendingTopic {
 	private static final Logger LOG = Logger.getLogger(TrendingTopic.class);
 	  private static final int DEFAULT_RUNTIME_IN_SECONDS = 60;
@@ -50,15 +52,16 @@ public class TrendingTopic {
 	  private final String topologyName;
 	  private final Config topologyConfig;
 	  private final int runtimeInSeconds;
-	
+	  public static String freq;
+	  public static String parallel;
 	 
-	  public TrendingTopic(String topologyname, long rateperSecond) throws InterruptedException{
+	  public TrendingTopic(String topologyname, long rateperSecond, int parallel) throws InterruptedException{
 		  	builder = new TopologyBuilder();
 		    topologyName = topologyname;
 		    topologyConfig = createTopologyConfiguration();
 		    runtimeInSeconds = DEFAULT_RUNTIME_IN_SECONDS;
-
-		    wireTopology(rateperSecond);
+		    
+		    wireTopology(rateperSecond, parallel);
 	  }
 	  
 	  private static Config createTopologyConfiguration() {
@@ -67,16 +70,17 @@ public class TrendingTopic {
 		    return conf;
 		  }
 
-	  private void wireTopology(long rateperSecond) throws InterruptedException {
+	  private void wireTopology(long rateperSecond, int parallel) throws InterruptedException {
 		    String spoutId = "TrendingTopicwithFrequency";
 		    String counterId = "counter";
 		    String intermediateRankerId = "intermediateRanker";
 		    String totalRankerId = "finalRanker";
-		    builder.setSpout(spoutId, new TrendingTopicSpout(false, rateperSecond), 4);
-		    builder.setBolt(counterId, new RollingCountBolt(9, 3), 4).fieldsGrouping(spoutId, new Fields("word"));
-		    builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId, new Fields(
+		//    int p = Constants.parallel;
+		    builder.setSpout(spoutId, new TrendingTopicSpout(false, rateperSecond));
+		    builder.setBolt(counterId, new RollingCountBolt(9, 3), parallel).fieldsGrouping(spoutId, new Fields("word"));
+		    builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), parallel).fieldsGrouping(counterId, new Fields(
 		        "obj"));
-		    builder.setBolt(totalRankerId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerId);
+		    builder.setBolt(totalRankerId, new TotalRankingsBolt(TOP_N), parallel).globalGrouping(intermediateRankerId);
 		  }
 		  
 	  
@@ -93,7 +97,11 @@ public class TrendingTopic {
 	  }
 	  public static void main(String[] args) throws InterruptedException, AlreadyAliveException, InvalidTopologyException, AuthorizationException{
 		  
-		  long ratePerSecond = 1;
+		  parallel = args[2];
+		  freq = args[3];
+		  
+		  
+		 // long ratePerSecond = Constants.freq;
 		
 	      String name = "TrendingTopicwithSettingTime";
 		 
@@ -107,7 +115,7 @@ public class TrendingTopic {
 		    }
 
 		    LOG.info("Topology name: " + topologyName);
-		    TrendingTopic tt = new TrendingTopic(topologyName, ratePerSecond);
+		    TrendingTopic tt = new TrendingTopic(topologyName,Long.valueOf(freq), Integer.valueOf(parallel));
 		    if (runLocally) {
 		      LOG.info("Running in local mode");
 		      StormRunner.runTopologyLocally(tt.builder.createTopology(), topologyName, tt.topologyConfig, tt.runtimeInSeconds);
