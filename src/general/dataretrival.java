@@ -104,6 +104,7 @@ public class dataretrival {
 	
 		StormREST sr = new StormREST("http://115.146.85.187:8080");
 
+	//	String freq = args[0];
 	
 		sr.Topologyget();
 		
@@ -143,7 +144,7 @@ public class dataretrival {
 		scheduledPool.schedule(pu, 0, TimeUnit.SECONDS);
 ////		scheduledPool.scheduleAtFixedRate(pu, 0, 20, TimeUnit.SECONDS);
 		System.out.println("new thread start");
-		Thread.sleep(5*60*1000);
+		Thread.sleep(10*60*1000);
 	}
 
 	

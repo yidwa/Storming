@@ -24,11 +24,13 @@ public class PerformanceUpdate implements Runnable{
 	HttpURLConnection conn;
 	Object obj;
 	JSONObject jobj;
+	String freq;
 	
 	public PerformanceUpdate(HashMap<String, Topology> t, String hostport) {
 		// TODO Auto-generated constructor stub
 		this.topologies = t;
 		this.hostport =hostport;
+	//	this.freq = freq;
 		
 	}
 //	public void updating(){
@@ -38,22 +40,24 @@ public class PerformanceUpdate implements Runnable{
 		for(Entry<String, Topology> e : topologies.entrySet()){
 			System.out.println("start now ");
 			ComponenetsPerf(e.getKey());
-			String f = TrendingTopic.freq;
-			String p = TrendingTopic.parallel;
-			writeFile(e.getKey(), f, p);
+//			String f = TrendingTopic.freq;
+//			String p = tRE.parallel;
+			writeFile(e.getKey());
 		}
 	}
 	
-	public void writeFile(String id, String freq, String parallel){
+	public void writeFile(String id){
 		try {
-			String path = Constants.topologysum+freq+"_p"+parallel+".txt";
+			String path = Constants.topologysum+".txt";
 			File f = new File(path);
 			FileWriter fw = new FileWriter(f,true);
 			String time = Methods.formattime();
 			Topology t = topologies.get(id);
-			fw.write(time + " , "+ t.getSpout().id+ " , "+t.getSpout().getLatency()+" , "+t.getSpout().getTransfered()+"\n");
+//			fw.write(time + " , "+ t.getSpout().id+ " , "+t.getSpout().getLatency()+" , "+t.getSpout().getTransfered()+"\n");
+			fw.write(time+" , "+t.getSpout().toString());
 			for (Bolt b : t.getBolts()){	
-				fw.write(b.id+" , "+b.getEmit()+" , "+b.getProcessdelay()+" , "+b.getExecutedelay()+ " , "+b.capacity+"\n");
+//				fw.write(b.id+" , "+b.getEmit()+" , "+b.getProcessdelay()+" , "+b.getExecutedelay()+ " , "+"\n");
+				fw.write(b.toString());
 			}
 			fw.flush();
 				
@@ -91,16 +95,24 @@ public class PerformanceUpdate implements Runnable{
 					jobj = (JSONObject) obj;
 					String latency = (String)jobj.get("completeLatency");
 					Long transfered= (Long)jobj.get("transferred");
+					Long emitted = (Long)jobj.get("emitted");
+					int executor = (Integer)jobj.get("executors");
 					topologies.get(id).getSpout().setLatency(latency);
 					topologies.get(id).getSpout().setTransfered(transfered);
+					topologies.get(id).getSpout().setExecutor(executor);
+					topologies.get(id).getSpout().setEmitted(emitted);
 			   }
 				for (int i = 0; i<ttemp.size(); i++){
 					obj = ttemp.get(i);
 					jobj = (JSONObject) obj;
-					topologies.get(id).getBolts().get(i).setCapacity((String)jobj.get("capacity"));
+			//		topologies.get(id).getBolts().get(i).setCapacity((String)jobj.get("capacity"));
 					topologies.get(id).getBolts().get(i).setExecutedelay((String)jobj.get("executeLatency"));
 					topologies.get(id).getBolts().get(i).setProcessdelay((String)jobj.get("processLatency"));
 					topologies.get(id).getBolts().get(i).setEmit((Long)jobj.get("emitted"));
+					topologies.get(id).getBolts().get(i).setExecuted((Long)jobj.get("executed"));
+					topologies.get(id).getBolts().get(i).setExecutor((Integer)jobj.get("executors"));
+					topologies.get(id).getBolts().get(i).setTransferred((Long)jobj.get("transferred"));
+				
 				}
 				
 			}

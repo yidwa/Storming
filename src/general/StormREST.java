@@ -32,6 +32,7 @@ public class StormREST {
 	JSONObject jobj;
 	String output;
 	BufferedReader br;
+	//public static String parallel;
 	
 	public StormREST(String hostport){
 		this.hostport = hostport;
@@ -261,6 +262,9 @@ public class StormREST {
 					jobj = (JSONObject) obj;
 					String boltid = (String)jobj.get("boltId");
 					b.add(new Bolt(boltid));
+//					if (i == 0){
+//						parallel = String.valueOf(jobj.get("executors"));
+//					}
 			   }
 				topologies.get(id).setBolts(b);			
 			}
