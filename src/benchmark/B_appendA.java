@@ -34,7 +34,8 @@ public class B_appendA extends BaseRichBolt{
 		String coming = (String) tuple.getValue(0);
 		coming = coming+"_a";
 		collector.emit(new Values(coming));
-		Methods.writeFile("appenA_emit : "+coming);
+//		Methods.writeFile("appenA_emit : "+coming);
+		collector.ack(tuple);
 	}
 
 	@Override

@@ -24,21 +24,22 @@ public class Methods {
 			output = instant.toString ().replace ( "T" , " " ).replace( "Z" , "");
 			return output;
 		}
-	  public static void writeFile(String sen){
-			try {
-				String path = "/Users/yidwa/Desktop/Records.txt";
-				File f = new File(path);
-				FileWriter fw = new FileWriter(f,true);
-				String time = Methods.formattime();
-				fw.write(time+" , "+ sen+"\n");
-			
-				fw.flush();
-					
-				fw.close();
-				}
-				catch (IOException e1) {
-						// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-		}
+//	  public static void writeFile(String sen){
+//			try {
+////				String path = "/Users/yidwa/Desktop/Records.txt";
+//				String path = "/home/ubuntu/TopologyResult.txt";
+//				File f = new File(path);
+//				FileWriter fw = new FileWriter(f,true);
+//				String time = Methods.formattime();
+//				fw.write(time+" , "+ sen+"\n");
+//			
+//				fw.flush();
+//					
+//				fw.close();
+//				}
+//				catch (IOException e1) {
+//						// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//		}
 }

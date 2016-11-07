@@ -40,6 +40,7 @@ public class Star_appendA extends BaseRichBolt{
 		final Random rand = new Random();
         final String des = temp[rand.nextInt(temp.length)];
 		collector.emit(des,new Values(coming));
+		collector.ack(tuple);
 //		Methods.writeFile("appenA_emit : "+coming + " to "+des);
 		
 		

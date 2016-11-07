@@ -58,7 +58,7 @@ public class DiamondSpout extends BaseRichSpout{
 	        final String des = temp[rand.nextInt(temp.length)];
 			_collector.emit(des, new Values(emiting), new SentWithTime(emiting, nextEmitTime-_periodNano));
 //			System.out.println("emitting from spout ");
-			Methods.writeFile("diamondspout_emit_"+emiting+" to "+des);
+//			Methods.writeFile("diamondspout_emit_"+emiting+" to "+des);
 			_emitsLeft--;
 		}
 			

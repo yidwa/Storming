@@ -36,7 +36,8 @@ public class B_appendC extends BaseRichBolt{
 		coming = coming+"_c";
 		collector.emit(new Values(coming));
 //		System.out.println("emit "+coming);
-		Methods.writeFile("appendC_emit : "+coming);
+//		Methods.writeFile("appendC_emit : "+coming);
+		collector.ack(tuple);
 	}
 
 	@Override

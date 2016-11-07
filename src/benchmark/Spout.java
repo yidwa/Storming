@@ -54,7 +54,7 @@ public class Spout extends BaseRichSpout{
 			final String emiting = "hello_world";
 			_collector.emit(new Values(emiting), new SentWithTime(emiting, nextEmitTime-_periodNano));
 //			System.out.println("emitting from spout ");
-			Methods.writeFile("spout_emit_"+emiting );
+//			Methods.writeFile("spout_emit_"+emiting );
 			_emitsLeft--;
 		}
 			
