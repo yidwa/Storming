@@ -1,8 +1,5 @@
 package benchmark;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.apache.storm.Config;
 import org.apache.storm.generated.AlreadyAliveException;
@@ -11,10 +8,9 @@ import org.apache.storm.generated.InvalidTopologyException;
 import org.apache.storm.starter.util.StormRunner;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
-import general.Methods;
 
-public class LineTopology {
-	private static final Logger LOG = Logger.getLogger(LineTopology.class);
+public class StarTopology {
+	private static final Logger LOG = Logger.getLogger(StarTopology.class);
 	  private static final int DEFAULT_RUNTIME_IN_SECONDS = 30;
 //	  private static final int TOP_N = 5;
 
@@ -25,7 +21,7 @@ public class LineTopology {
 	  public static String freq;
 //	  public static String parallel;
 	 
-	  public LineTopology(String topologyname, int numworkers, long rateperSecond) throws InterruptedException{
+	  public StarTopology(String topologyname, int numworkers, long rateperSecond) throws InterruptedException{
 		  	builder = new TopologyBuilder();
 		    topologyName = topologyname;
 		    topologyConfig = createTopologyConfiguration(numworkers);
@@ -48,15 +44,20 @@ public class LineTopology {
 		    String dId = "appending_d";
 		    String lId = "removelast";
 		    builder.setSpout(spoutId, new Spout(false, rateperSecond));
-		    builder.setBolt(aId, new B_appendA(),2).fieldsGrouping(spoutId, new Fields("word"));
-		    builder.setBolt(bId, new B_appendB(),2).fieldsGrouping(aId, new Fields("appendinga"));
-		    builder.setBolt(cId, new B_appendC(),2).fieldsGrouping(bId, new Fields("appendingb"));
-		    builder.setBolt(dId, new B_appendD(),2).fieldsGrouping(cId, new Fields("appendingc"));
-		    builder.setBolt(lId, new B_removelast(),2).fieldsGrouping(dId, new Fields("appendingd"));
+		    builder.setBolt(aId, new Star_appendA(),2).fieldsGrouping(spoutId, new Fields("word"));
+//		    builder.setBolt(aId, new B_appendA(),2).shuffleGrouping(spoutId, "addingb");
+		    builder.setBolt(bId, new B_appendB(),2).shuffleGrouping(aId, "addingb");
+		    builder.setBolt(cId, new B_appendC(),2).shuffleGrouping(aId, "addingc");
+		    builder.setBolt(dId, new B_appendD(),2).shuffleGrouping(aId, "addingd");
+//		    builder.setBolt(bId, new B_appendB(),2).fieldsGrouping(aId, new Fields("appenda"));
+//		    builder.setBolt(cId, new B_appendC(),2).fieldsGrouping(aId, new Fields("appenda"));
+//		    builder.setBolt(dId, new B_appendD(),2).fieldsGrouping(aId, new Fields("appenda"));
+//		    builder.setBolt(lId, new B_removelast(),2).fieldsGrouping(aId, new Fields("appenda"));
+		    builder.setBolt(lId, new B_removelast(),2).shuffleGrouping(aId, "removea");
 //		    String spoutId = "TrendingTopicwithFrequency";
 //		    String counterId = "counter";
 //		    String intermediateRankerId = "intermediateRanker";
-//		    String totalRankerId = "finalRanker";
+//		    String totalRankerId = "finalRanker";s
 		//    int p = Constants.parallel;
 //		    builder.setSpout(spoutId, new TrendingTopicSpout(false, rateperSecond),2);
 //		    builder.setBolt(counterId, new RollingCountBolt(9, 3), 3).fieldsGrouping(spoutId, new Fields("word"));
@@ -68,34 +69,18 @@ public class LineTopology {
 		  
 	  
 	  
-//	  public static class SentWithTime {
-//		    public final String sentence;
-//		    public final long time;
-//
-//		    public SentWithTime(String sentence, long time) {
-//		        this.sentence = sentence;
-//		        this.time = time;
-//		    }
-//		    
-//	  }
+	  public static class SentWithTime {
+		    public final String sentence;
+		    public final long time;
+
+		    public SentWithTime(String sentence, long time) {
+		        this.sentence = sentence;
+		        this.time = time;
+		    }
+		    
+	  }
 	  
-//	  public static void writeFile(String sen){
-//			try {
-//				String path = "/Users/yidwa/Desktop/Records.txt";
-//				File f = new File(path);
-//				FileWriter fw = new FileWriter(f,true);
-//				String time = Methods.formattime();
-//				fw.write(time+" , "+ sen+"\n");
-//			
-//				fw.flush();
-//					
-//				fw.close();
-//				}
-//				catch (IOException e1) {
-//						// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//		}
+
 	  
 	  
 	  // four parameters, name , remote, freq, numworkers
@@ -103,7 +88,7 @@ public class LineTopology {
 		  
 		  int numworker = 0;
 		 
-	      String topologyName = "line_benchmark";
+	      String topologyName = "star_benchmark";
 		    if (args.length >= 1) {
 		      topologyName = args[0];
 		    }
@@ -122,14 +107,14 @@ public class LineTopology {
 		    }
 
 		    LOG.info("Topology name: " + topologyName);
-		    LineTopology tt = new LineTopology(topologyName, numworker, Long.valueOf(freq));
+		    StarTopology st = new StarTopology(topologyName, numworker, Long.valueOf(freq));
 		    if (runLocally) {
 		      LOG.info("Running in local mode");
-		      StormRunner.runTopologyLocally(tt.builder.createTopology(), topologyName, tt.topologyConfig, tt.runtimeInSeconds);
+		      StormRunner.runTopologyLocally(st.builder.createTopology(), topologyName, st.topologyConfig, st.runtimeInSeconds);
 		    }
 		    else {
 		      LOG.info("Running in remote (cluster) mode");
-		      StormRunner.runTopologyRemotely(tt.builder.createTopology(), topologyName, tt.topologyConfig);
+		      StormRunner.runTopologyRemotely(st.builder.createTopology(), topologyName, st.topologyConfig);
 		    }
 	  	}
 	 }

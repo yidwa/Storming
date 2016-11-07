@@ -18,7 +18,7 @@ public class B_appendB extends BaseRichBolt{
 	 */
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
-	private static final Logger Log = LoggerFactory.getLogger(B_appendA.class);
+	private static final Logger Log = LoggerFactory.getLogger(B_appendB.class);
 	@SuppressWarnings("unused")
 	private OutputCollector collector;
 	
@@ -36,7 +36,7 @@ public class B_appendB extends BaseRichBolt{
 		coming = coming+"_b";
 		collector.emit(new Values(coming));
 //		System.out.println("emit "+coming);
-//		LineTopology.writeFile("appendB_emit_"+coming+ " : ");
+		Methods.writeFile("appendB_emit : "+coming);
 	}
 
 	@Override

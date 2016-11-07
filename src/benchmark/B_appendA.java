@@ -32,10 +32,9 @@ public class B_appendA extends BaseRichBolt{
 	public void execute(Tuple tuple) {
 		// TODO Auto-generated method stub
 		String coming = (String) tuple.getValue(0);
-		coming = coming+"a";
+		coming = coming+"_a";
 		collector.emit(new Values(coming));
-//		System.out.println("emit "+coming);
-//		LineTopology.writeFile("appenA_emit_"+coming+ " : ");
+		Methods.writeFile("appenA_emit : "+coming);
 	}
 
 	@Override

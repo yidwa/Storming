@@ -19,7 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import benchmark.Methods.SentWithTime;
 
-public class Spout extends BaseRichSpout{
+@SuppressWarnings("serial")
+public class DiamondSpout extends BaseRichSpout{
 	public static Logger LOG = LoggerFactory.getLogger(TrendingTopicSpout.class);
 	boolean _isDistributed;
 	SpoutOutputCollector _collector;
@@ -30,7 +31,7 @@ public class Spout extends BaseRichSpout{
 	Random _rand;
 	HistogramMetric _histo;
 	
-	public Spout(boolean _isDistributed, long ratePerSecond){
+	public DiamondSpout(boolean _isDistributed, long ratePerSecond){
 		this._isDistributed = _isDistributed;
 		if(ratePerSecond > 0){
 			// when the ratePersecond > 1000000000, emit amount >1, that is ratepersecond/1000000000, otherwise, emit amount is 1
@@ -52,9 +53,12 @@ public class Spout extends BaseRichSpout{
 		}
 		if (_emitsLeft > 0){
 			final String emiting = "hello_world";
-			_collector.emit(new Values(emiting), new SentWithTime(emiting, nextEmitTime-_periodNano));
+			String[] temp = {"addinga", "addingb", "addingc", "addingd"};
+			final Random rand = new Random();
+	        final String des = temp[rand.nextInt(temp.length)];
+			_collector.emit(des, new Values(emiting), new SentWithTime(emiting, nextEmitTime-_periodNano));
 //			System.out.println("emitting from spout ");
-			Methods.writeFile("spout_emit_"+emiting );
+			Methods.writeFile("diamondspout_emit_"+emiting+" to "+des);
 			_emitsLeft--;
 		}
 			
@@ -78,7 +82,11 @@ public class Spout extends BaseRichSpout{
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		// TODO Auto-generated method stub
-		 declarer.declare(new Fields("word"));
+//		 declarer.declare(new Fields("word"));
+		declarer.declareStream("addinga", new Fields("A"));
+		declarer.declareStream("addingb", new Fields("B"));
+		declarer.declareStream("addingc", new Fields("C"));
+		declarer.declareStream("addingd", new Fields("D"));
 	}
 	
 

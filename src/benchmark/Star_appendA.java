@@ -1,7 +1,8 @@
-
 package benchmark;
 
 import java.util.Map;
+import java.util.Random;
+
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -12,17 +13,17 @@ import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class B_removelast extends BaseRichBolt{
+public class Star_appendA extends BaseRichBolt{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
-	private static final Logger Log = LoggerFactory.getLogger(B_appendA.class);
+	private static final Logger Log = LoggerFactory.getLogger(Star_appendA.class);
 	@SuppressWarnings("unused")
 	private OutputCollector collector;
 	
-    public B_removelast() {
+    public Star_appendA() {
 		// TODO Auto-generated constructor stub
 		super();
 	}
@@ -33,10 +34,16 @@ public class B_removelast extends BaseRichBolt{
 	public void execute(Tuple tuple) {
 		// TODO Auto-generated method stub
 		String coming = (String) tuple.getValue(0);
-		coming = coming.substring(0, coming.length()-2);
-//		collector.emit(new Values(coming));
-//		System.out.println("emit "+coming);
-		Methods.writeFile("remove_emit :"+coming);
+		coming = coming+"_a";
+		
+		String[] temp = {"addingb", "addingc", "addingd", "removea"};
+		final Random rand = new Random();
+        final String des = temp[rand.nextInt(temp.length)];
+		collector.emit(des,new Values(coming));
+//		Methods.writeFile("appenA_emit : "+coming + " to "+des);
+		
+		
+		
 	}
 
 	@Override
@@ -48,7 +55,11 @@ public class B_removelast extends BaseRichBolt{
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declare) {
 		// TODO Auto-generated method stub
-		declare.declare(new Fields("removelast"));
+//		declare.declare(new Fields("appenda"));
+		declare.declareStream("addingb", new Fields("B"));
+		declare.declareStream("addingc", new Fields("C"));
+		declare.declareStream("addingd", new Fields("D"));
+		declare.declareStream("removea", new Fields("R"));
 	}
 
 
