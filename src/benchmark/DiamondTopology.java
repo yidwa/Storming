@@ -15,7 +15,7 @@ public class DiamondTopology extends BenchMarkTopology{
 		    String cId = "appending_c";
 		    String dId = "appending_d";
 		    String lId = "removelast";
-		    builder.setSpout(spoutId, new DiamondSpout(false, rateperSecond));
+		    builder.setSpout(spoutId, new DiamondSpout(false, rateperSecond),2);
 		    builder.setBolt(aId, new B_appendA(),2).shuffleGrouping(spoutId, "addinga");
 		    builder.setBolt(bId, new B_appendB(),2).shuffleGrouping(spoutId, "addingb");
 		    builder.setBolt(cId, new B_appendC(),2).shuffleGrouping(spoutId, "addingc");

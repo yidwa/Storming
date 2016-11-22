@@ -137,11 +137,12 @@ public class dataretrival {
 	ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(5);
 ////
 ////	
-	for (int i = 0; i< 14; i++){
+	for (int i = 0; i< 1; i++){
 //		
-		PerformanceUpdate pu = new PerformanceUpdate(sr.topologies, sr.hostport);
-////		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
-		scheduledPool.schedule(pu, 0, TimeUnit.SECONDS);
+//		PerformanceUpdate pu = new PerformanceUpdate(sr.topologies, sr.hostport);
+		SuperVisorUpdate update = new SuperVisorUpdate(sr.workers, sr.hostport);
+//		scheduledPool.schedule(pu, 0, TimeUnit.SECONDS);
+		scheduledPool.schedule(update, 0, TimeUnit.SECONDS);
 ////		scheduledPool.scheduleAtFixedRate(pu, 0, 20, TimeUnit.SECONDS);
 		System.out.println("new thread start");
 		Thread.sleep(10*60*1000);

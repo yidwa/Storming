@@ -34,9 +34,9 @@ public class B_removelast extends BaseRichBolt{
 		// TODO Auto-generated method stub
 		String coming = (String) tuple.getValue(0);
 		coming = coming.substring(0, coming.length()-2);
-//		collector.emit(new Values(coming));
+		collector.emit(new Values(coming));
 //		System.out.println("emit "+coming);
-//		Methods.writeFile("remove_emit :"+coming);
+		Methods.writeFile("remove_emit :"+coming);
 		collector.ack(tuple);
 	}
 

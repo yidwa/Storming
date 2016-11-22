@@ -1,5 +1,6 @@
 package benchmark;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -54,7 +55,7 @@ public class Spout extends BaseRichSpout{
 			final String emiting = "hello_world";
 			_collector.emit(new Values(emiting), new SentWithTime(emiting, nextEmitTime-_periodNano));
 //			System.out.println("emitting from spout ");
-//			Methods.writeFile("spout_emit_"+emiting );
+			Methods.writeFile("spout_emit_"+emiting );
 			_emitsLeft--;
 		}
 			
@@ -68,6 +69,16 @@ public class Spout extends BaseRichSpout{
 		_emitsLeft = _emitAmount;
 		
 	}
+//	
+//	 @Override
+//	    public void ack(Object id) {
+//	      long end = System.nanoTime();
+//	      SentWithTime st = (SentWithTime)id;
+//	      long temp = end-st.time;
+//	      DecimalFormat formatter = new DecimalFormat("#0.00");
+//	      Methods.writeFile(String.valueOf(formatter.format((temp/1000000.00))));
+//	    }
+	
 	
 	 public void fail(Object msgId) {
 	     SentWithTime st = (SentWithTime)msgId;

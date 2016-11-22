@@ -19,7 +19,7 @@ public class Benchmarking {
 	public static void main(String[] args) throws InterruptedException, AlreadyAliveException, InvalidTopologyException, AuthorizationException {
 		  
 			boolean runLocally = true;
-			topologyname = "diamond";
+			topologyname = "line";
 			 
 		    if (args.length >= 2) {
 		    	runLocally = false;
