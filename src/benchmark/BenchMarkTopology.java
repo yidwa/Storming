@@ -25,6 +25,7 @@ public class BenchMarkTopology {
 		    Config conf = new Config();
 		    conf.setDebug(true);
 		    conf.setNumWorkers(numworkers);
+		    conf.setNumAckers(numworkers);
 		    return conf;
 		  }
 }

@@ -52,10 +52,28 @@ public class Spout extends BaseRichSpout{
 			nextEmitTime = nextEmitTime + _periodNano;
 		}
 		if (_emitsLeft > 0){
-			final String emiting = "hello_world";
+			String emiting = "hello_world";
+			final String[] words = new String[] {"a","b","c","d"};
+	        final Random rand = new Random();
+	        final String word = words[rand.nextInt(words.length)];
+	        emiting += word;
+	        
+//            long lower = 0;
+//			long upper = 1000000000/rps;
+//			Random r = new Random();
+//	        long randomAmount = lower +  (long)(r.nextDouble()*(upper-lower));
+//	        try {
+//				TimeUnit.NANOSECONDS.sleep(randomAmount);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} 
+
+
+
 			_collector.emit(new Values(emiting), new SentWithTime(emiting, nextEmitTime-_periodNano));
 //			System.out.println("emitting from spout ");
-			Methods.writeFile("spout_emit_"+emiting );
+//			Methods.writeFile("spout_emit_"+emiting );
 			_emitsLeft--;
 		}
 			
@@ -89,7 +107,7 @@ public class Spout extends BaseRichSpout{
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		// TODO Auto-generated method stub
-		 declarer.declare(new Fields("word"));
+		 declarer.declare(new Fields("emiting"));
 	}
 	
 

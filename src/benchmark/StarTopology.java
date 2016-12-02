@@ -18,11 +18,11 @@ public class StarTopology extends BenchMarkTopology{
 		    String dId = "appending_d";
 		    String lId = "removelast";
 		    builder.setSpout(spoutId, new Spout(false, rateperSecond),2);
-		    builder.setBolt(aId, new Star_appendA(),2);
-		    builder.setBolt(bId, new B_appendB(),2);
-		    builder.setBolt(cId, new B_appendC(),2);
-		    builder.setBolt(dId, new B_appendD(),2);
-		    builder.setBolt(lId, new B_removelast(),2);
+		    builder.setBolt(aId, new Star_appendA(),2).fieldsGrouping(spoutId, new Fields("emiting"));
+		    builder.setBolt(bId, new B_appendB(),2).shuffleGrouping(aId, "addingb");
+		    builder.setBolt(cId, new B_appendC(),2).shuffleGrouping(aId, "addingc");
+		    builder.setBolt(dId, new B_appendD(),2).shuffleGrouping(aId, "addingd");
+		    builder.setBolt(lId, new B_removelast(),2).shuffleGrouping(aId, "removea");
 	  }
   }
 	  

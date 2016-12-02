@@ -31,7 +31,7 @@ public class Benchmarking {
 		    		numworker = Integer.valueOf(args[2]);
 		    }
 		    else{ 
-		    	freq = "1";	
+		    	freq = "5";	
 		    	numworker = 1;
 		    }
 		   
